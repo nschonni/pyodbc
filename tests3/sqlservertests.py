@@ -80,14 +80,14 @@ class SqlServerTestCase(unittest.TestCase):
 
         for i in range(3):
             try:
-                self.cursor.execute("drop table t%d" % i)
+                self.cursor.execute("drop table t{0:d}".format(i))
                 self.cnxn.commit()
             except:
                 pass
 
         for i in range(3):
             try:
-                self.cursor.execute("drop procedure proc%d" % i)
+                self.cursor.execute("drop procedure proc{0:d}".format(i))
                 self.cnxn.commit()
             except:
                 pass
@@ -196,9 +196,9 @@ class SqlServerTestCase(unittest.TestCase):
         assert colsize is None or (value is None or colsize >= len(value))
 
         if colsize:
-            sql = "create table t1(s %s(%s))" % (sqltype, colsize)
+            sql = "create table t1(s {0!s}({1!s}))".format(sqltype, colsize)
         else:
-            sql = "create table t1(s %s)" % sqltype
+            sql = "create table t1(s {0!s})".format(sqltype)
 
         if resulttype is None:
             resulttype = type(value)
@@ -229,9 +229,9 @@ class SqlServerTestCase(unittest.TestCase):
         assert colsize is None or (value is None or colsize >= len(value))
 
         if colsize:
-            sql = "create table t1(s %s(%s))" % (sqltype, colsize)
+            sql = "create table t1(s {0!s}({1!s}))".format(sqltype, colsize)
         else:
-            sql = "create table t1(s %s)" % sqltype
+            sql = "create table t1(s {0!s})".format(sqltype)
 
         if resulttype is None:
             resulttype = type(value)
@@ -263,7 +263,7 @@ class SqlServerTestCase(unittest.TestCase):
             self._test_strtype('varchar', value, colsize=len(value))
         return t
     for value in STR_FENCEPOSTS:
-        locals()['test_varchar_%s' % len(value)] = _maketest(value)
+        locals()['test_varchar_{0!s}'.format(len(value))] = _maketest(value)
 
     def test_varchar_many(self):
         self.cursor.execute("create table t1(c1 varchar(300), c2 varchar(300), c3 varchar(300))")
@@ -292,7 +292,7 @@ class SqlServerTestCase(unittest.TestCase):
             self._test_strtype('nvarchar', value, colsize=len(value))
         return t
     for value in STR_FENCEPOSTS:
-        locals()['test_unicode_%s' % len(value)] = _maketest(value)
+        locals()['test_unicode_{0!s}'.format(len(value))] = _maketest(value)
 
     def test_unicode_longmax(self):
         # Issue 188:	Segfault when fetching NVARCHAR(MAX) data over 511 bytes
@@ -316,7 +316,7 @@ class SqlServerTestCase(unittest.TestCase):
             self._test_strtype('varbinary', bytearray(value), colsize=len(value), resulttype=bytes)
         return t
     for value in BYTE_FENCEPOSTS:
-        locals()['test_binary_bytearray_%s' % len(value)] = _maketest(value)
+        locals()['test_binary_bytearray_{0!s}'.format(len(value))] = _maketest(value)
 
     # bytes
 
@@ -325,7 +325,7 @@ class SqlServerTestCase(unittest.TestCase):
             self._test_strtype('varbinary', bytes(value), colsize=len(value))
         return t
     for value in BYTE_FENCEPOSTS:
-        locals()['test_binary_bytes_%s' % len(value)] = _maketest(value)
+        locals()['test_binary_bytes_{0!s}'.format(len(value))] = _maketest(value)
 
     #
     # image
@@ -341,7 +341,7 @@ class SqlServerTestCase(unittest.TestCase):
             self._test_strliketype('image', bytearray(value), resulttype=bytes)
         return t
     for value in IMAGE_FENCEPOSTS:
-        locals()['test_image_bytearray_%s' % len(value)] = _maketest(value)
+        locals()['test_image_bytearray_{0!s}'.format(len(value))] = _maketest(value)
 
     # bytes
 
@@ -350,7 +350,7 @@ class SqlServerTestCase(unittest.TestCase):
             self._test_strliketype('image', bytes(value))
         return t
     for value in IMAGE_FENCEPOSTS:
-        locals()['test_image_bytes_%s' % len(value)] = _maketest(value)
+        locals()['test_image_bytes_{0!s}'.format(len(value))] = _maketest(value)
 
     #
     # text
@@ -364,7 +364,7 @@ class SqlServerTestCase(unittest.TestCase):
             self._test_strliketype('text', value)
         return t
     for value in STR_FENCEPOSTS:
-        locals()['test_text_%s' % len(value)] = _maketest(value)
+        locals()['test_text_{0!s}'.format(len(value))] = _maketest(value)
 
     #
     # bit
@@ -385,7 +385,7 @@ class SqlServerTestCase(unittest.TestCase):
     def _decimal(self, precision, scale, negative):
         # From test provided by planders (thanks!) in Issue 91
 
-        self.cursor.execute("create table t1(d decimal(%s, %s))" % (precision, scale))
+        self.cursor.execute("create table t1(d decimal({0!s}, {1!s}))".format(precision, scale))
 
         # Construct a decimal that uses the maximum precision and scale.
         decStr = '9' * (precision - scale)
@@ -417,7 +417,7 @@ class SqlServerTestCase(unittest.TestCase):
                        (38, 0,  True),
                        (38, 10, True),
                        (38, 38, True) ]:
-        locals()['test_decimal_%s_%s_%s' % (p, s, n and 'n' or 'p')] = _maketest(p, s, n)
+        locals()['test_decimal_{0!s}_{1!s}_{2!s}'.format(p, s, n and 'n' or 'p')] = _maketest(p, s, n)
 
 
     def test_decimal_e(self):
@@ -997,7 +997,7 @@ class SqlServerTestCase(unittest.TestCase):
         # Create a table (t1) with 3 rows and a view (t2) into it.
         self.cursor.execute("create table t1(c1 int identity(1, 1), c2 varchar(50))")
         for i in range(3):
-            self.cursor.execute("insert into t1(c2) values (?)", "string%s" % i)
+            self.cursor.execute("insert into t1(c2) values (?)", "string{0!s}".format(i))
         self.cursor.execute("create view t2 as select * from t1")
 
         # Select from the view

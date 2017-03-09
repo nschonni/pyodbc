@@ -63,7 +63,7 @@ class PGTestCase(unittest.TestCase):
 
         for i in range(3):
             try:
-                self.cursor.execute("drop table t%d" % i)
+                self.cursor.execute("drop table t{0:d}".format(i))
                 self.cnxn.commit()
             except:
                 pass
@@ -115,9 +115,9 @@ class PGTestCase(unittest.TestCase):
         assert colsize is None or (value is None or colsize >= len(value))
 
         if colsize:
-            sql = "create table t1(s %s(%s))" % (sqltype, colsize)
+            sql = "create table t1(s {0!s}({1!s}))".format(sqltype, colsize)
         else:
-            sql = "create table t1(s %s)" % sqltype
+            sql = "create table t1(s {0!s})".format(sqltype)
 
         self.cursor.execute(sql)
         self.cursor.execute("insert into t1 values(?)", value)
@@ -510,7 +510,7 @@ def main():
     if options.test:
         # Run a single test
         if not options.test.startswith('test_'):
-            options.test = 'test_%s' % (options.test)
+            options.test = 'test_{0!s}'.format((options.test))
 
         s = unittest.TestSuite([ PGTestCase(connection_string, options.ansi, options.unicode, options.test) ])
     else:

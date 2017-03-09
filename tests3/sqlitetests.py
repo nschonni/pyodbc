@@ -75,7 +75,7 @@ class SqliteTestCase(unittest.TestCase):
 
         for i in range(3):
             try:
-                self.cursor.execute("drop table t%d" % i)
+                self.cursor.execute("drop table t{0:d}".format(i))
                 self.cnxn.commit()
             except:
                 pass
@@ -134,9 +134,9 @@ class SqliteTestCase(unittest.TestCase):
         assert colsize is None or (value is None or colsize >= len(value))
 
         if colsize:
-            sql = "create table t1(s %s(%s))" % (sqltype, colsize)
+            sql = "create table t1(s {0!s}({1!s}))".format(sqltype, colsize)
         else:
-            sql = "create table t1(s %s)" % sqltype
+            sql = "create table t1(s {0!s})".format(sqltype)
 
         self.cursor.execute(sql)
         self.cursor.execute("insert into t1 values(?)", value)
@@ -168,9 +168,9 @@ class SqliteTestCase(unittest.TestCase):
         assert colsize is None or (value is None or colsize >= len(value))
 
         if colsize:
-            sql = "create table t1(s %s(%s))" % (sqltype, colsize)
+            sql = "create table t1(s {0!s}({1!s}))".format(sqltype, colsize)
         else:
-            sql = "create table t1(s %s)" % sqltype
+            sql = "create table t1(s {0!s})".format(sqltype)
 
         self.cursor.execute(sql)
         self.cursor.execute("insert into t1 values(?)", value)
@@ -195,7 +195,7 @@ class SqliteTestCase(unittest.TestCase):
             self._test_strtype('text', value, len(value))
         return t
     for value in STR_FENCEPOSTS:
-        locals()['test_text_%s' % len(value)] = _maketest(value)
+        locals()['test_text_{0!s}'.format(len(value))] = _maketest(value)
 
     def test_text_upperlatin(self):
         self._test_strtype('varchar', 'á')
@@ -217,7 +217,7 @@ class SqliteTestCase(unittest.TestCase):
             self._test_strtype('blob', bytearray(value), len(value))
         return t
     for value in BYTE_FENCEPOSTS:
-        locals()['test_blob_%s' % len(value)] = _maketest(value)
+        locals()['test_blob_{0!s}'.format(len(value))] = _maketest(value)
 
     def test_subquery_params(self):
         """Ensure parameter markers work in a subquery"""
@@ -521,7 +521,7 @@ class SqliteTestCase(unittest.TestCase):
         # Create a table (t1) with 3 rows and a view (t2) into it.
         self.cursor.execute("create table t1(c1 int identity(1, 1), c2 varchar(50))")
         for i in range(3):
-            self.cursor.execute("insert into t1(c2) values (?)", "string%s" % i)
+            self.cursor.execute("insert into t1(c2) values (?)", "string{0!s}".format(i))
         self.cursor.execute("create view t2 as select * from t1")
 
         # Select from the view

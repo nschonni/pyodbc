@@ -63,14 +63,14 @@ class InformixTestCase(unittest.TestCase):
 
         for i in range(3):
             try:
-                self.cursor.execute("drop table t%d" % i)
+                self.cursor.execute("drop table t{0:d}".format(i))
                 self.cnxn.commit()
             except:
                 pass
 
         for i in range(3):
             try:
-                self.cursor.execute("drop procedure proc%d" % i)
+                self.cursor.execute("drop procedure proc{0:d}".format(i))
                 self.cnxn.commit()
             except:
                 pass
@@ -172,9 +172,9 @@ class InformixTestCase(unittest.TestCase):
         assert colsize is None or (value is None or colsize >= len(value))
 
         if colsize:
-            sql = "create table t1(s %s(%s))" % (sqltype, colsize)
+            sql = "create table t1(s {0!s}({1!s}))".format(sqltype, colsize)
         else:
-            sql = "create table t1(s %s)" % sqltype
+            sql = "create table t1(s {0!s})".format(sqltype)
 
         self.cursor.execute(sql)
         self.cursor.execute("insert into t1 values(?)", value)
@@ -206,9 +206,9 @@ class InformixTestCase(unittest.TestCase):
         assert colsize is None or (value is None or colsize >= len(value))
 
         if colsize:
-            sql = "create table t1(s %s(%s))" % (sqltype, colsize)
+            sql = "create table t1(s {0!s}({1!s}))".format(sqltype, colsize)
         else:
-            sql = "create table t1(s %s)" % sqltype
+            sql = "create table t1(s {0!s})".format(sqltype)
 
         self.cursor.execute(sql)
         self.cursor.execute("insert into t1 values(?)", value)
@@ -234,7 +234,7 @@ class InformixTestCase(unittest.TestCase):
             self._test_strtype('varchar', value, len(value))
         return t
     for value in ANSI_FENCEPOSTS:
-        locals()['test_varchar_%s' % len(value)] = _maketest(value)
+        locals()['test_varchar_{0!s}'.format(len(value))] = _maketest(value)
 
     def test_varchar_many(self):
         self.cursor.execute("create table t1(c1 varchar(300), c2 varchar(300), c3 varchar(300))")
@@ -266,7 +266,7 @@ class InformixTestCase(unittest.TestCase):
             self._test_strtype('nvarchar', value, len(value))
         return t
     for value in UNICODE_FENCEPOSTS:
-        locals()['test_unicode_%s' % len(value)] = _maketest(value)
+        locals()['test_unicode_{0!s}'.format(len(value))] = _maketest(value)
 
     def test_unicode_upperlatin(self):
         self._test_strtype('varchar', 'á')
@@ -288,7 +288,7 @@ class InformixTestCase(unittest.TestCase):
             self._test_strtype('varbinary', buffer(value), len(value))
         return t
     for value in ANSI_FENCEPOSTS:
-        locals()['test_binary_%s' % len(value)] = _maketest(value)
+        locals()['test_binary_{0!s}'.format(len(value))] = _maketest(value)
 
     #
     # image
@@ -303,7 +303,7 @@ class InformixTestCase(unittest.TestCase):
             self._test_strliketype('image', buffer(value))
         return t
     for value in IMAGE_FENCEPOSTS:
-        locals()['test_image_%s' % len(value)] = _maketest(value)
+        locals()['test_image_{0!s}'.format(len(value))] = _maketest(value)
 
     def test_image_upperlatin(self):
         self._test_strliketype('image', buffer('á'))
@@ -324,7 +324,7 @@ class InformixTestCase(unittest.TestCase):
             self._test_strliketype('text', value)
         return t
     for value in ANSI_FENCEPOSTS:
-        locals()['test_text_%s' % len(value)] = _maketest(value)
+        locals()['test_text_{0!s}'.format(len(value))] = _maketest(value)
 
     def test_text_upperlatin(self):
         self._test_strliketype('text', 'á')
@@ -348,7 +348,7 @@ class InformixTestCase(unittest.TestCase):
     def _decimal(self, precision, scale, negative):
         # From test provided by planders (thanks!) in Issue 91
 
-        self.cursor.execute("create table t1(d decimal(%s, %s))" % (precision, scale))
+        self.cursor.execute("create table t1(d decimal({0!s}, {1!s}))".format(precision, scale))
 
         # Construct a decimal that uses the maximum precision and scale.
         decStr = '9' * (precision - scale)
@@ -379,7 +379,7 @@ class InformixTestCase(unittest.TestCase):
                        (38, 0,  True),
                        (38, 10, True),
                        (38, 38, True) ]:
-        locals()['test_decimal_%s_%s_%s' % (p, s, n and 'n' or 'p')] = _maketest(p, s, n)
+        locals()['test_decimal_{0!s}_{1!s}_{2!s}'.format(p, s, n and 'n' or 'p')] = _maketest(p, s, n)
 
 
     def test_decimal_e(self):
@@ -926,7 +926,7 @@ class InformixTestCase(unittest.TestCase):
         # Create a table (t1) with 3 rows and a view (t2) into it.
         self.cursor.execute("create table t1(c1 int identity(1, 1), c2 varchar(50))")
         for i in range(3):
-            self.cursor.execute("insert into t1(c2) values (?)", "string%s" % i)
+            self.cursor.execute("insert into t1(c2) values (?)", "string{0!s}".format(i))
         self.cursor.execute("create view t2 as select * from t1")
 
         # Select from the view

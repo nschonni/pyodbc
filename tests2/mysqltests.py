@@ -67,14 +67,14 @@ class MySqlTestCase(unittest.TestCase):
 
         for i in range(3):
             try:
-                self.cursor.execute("drop table t%d" % i)
+                self.cursor.execute("drop table t{0:d}".format(i))
                 self.cnxn.commit()
             except:
                 pass
 
         for i in range(3):
             try:
-                self.cursor.execute("drop procedure proc%d" % i)
+                self.cursor.execute("drop procedure proc{0:d}".format(i))
                 self.cnxn.commit()
             except:
                 pass
@@ -133,9 +133,9 @@ class MySqlTestCase(unittest.TestCase):
         assert colsize is None or (value is None or colsize >= len(value))
 
         if colsize:
-            sql = "create table t1(s %s(%s))" % (sqltype, colsize)
+            sql = "create table t1(s {0!s}({1!s}))".format(sqltype, colsize)
         else:
-            sql = "create table t1(s %s)" % sqltype
+            sql = "create table t1(s {0!s})".format(sqltype)
 
         try:
             self.cursor.execute(sql)
@@ -192,11 +192,11 @@ class MySqlTestCase(unittest.TestCase):
             self._test_strtype('varchar', value, max(1, len(value)))
         return t
     for value in ANSI_FENCEPOSTS:
-        locals()['test_varchar_%s' % len(value)] = _maketest(value)
+        locals()['test_varchar_{0!s}'.format(len(value))] = _maketest(value)
 
     # Generate a test using Unicode.
     for value in UNICODE_FENCEPOSTS:
-        locals()['test_wvarchar_%s' % len(value)] = _maketest(value)
+        locals()['test_wvarchar_{0!s}'.format(len(value))] = _maketest(value)
 
     def test_varchar_many(self):
         self.cursor.execute("create table t1(c1 varchar(300), c2 varchar(300), c3 varchar(300))")
@@ -232,7 +232,7 @@ class MySqlTestCase(unittest.TestCase):
             self._test_strtype('varbinary', bytearray(value), max(1, len(value)))
         return t
     for value in ANSI_FENCEPOSTS:
-        locals()['test_binary_%s' % len(value)] = _maketest(value)
+        locals()['test_binary_{0!s}'.format(len(value))] = _maketest(value)
 
     #
     # blob
@@ -247,7 +247,7 @@ class MySqlTestCase(unittest.TestCase):
             self._test_strtype('blob', bytearray(value))
         return t
     for value in BLOB_FENCEPOSTS:
-        locals()['test_blob_%s' % len(value)] = _maketest(value)
+        locals()['test_blob_{0!s}'.format(len(value))] = _maketest(value)
 
     def test_blob_upperlatin(self):
         self._test_strtype('blob', bytearray('á'))
@@ -265,7 +265,7 @@ class MySqlTestCase(unittest.TestCase):
             self._test_strtype('text', value)
         return t
     for value in ANSI_FENCEPOSTS:
-        locals()['test_text_%s' % len(value)] = _maketest(value)
+        locals()['test_text_{0!s}'.format(len(value))] = _maketest(value)
 
     def test_text_upperlatin(self):
         self._test_strtype('text', u'á')

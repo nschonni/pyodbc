@@ -16,11 +16,11 @@ def add_to_path():
     import imp
 
     library_exts  = [ t[0] for t in imp.get_suffixes() if t[-1] == imp.C_EXTENSION ]
-    library_names = [ 'pyodbc%s' % ext for ext in library_exts ]
+    library_names = [ 'pyodbc{0!s}'.format(ext) for ext in library_exts ]
 
     # Only go into directories that match our version number.
 
-    dir_suffix = '-%s.%s' % (sys.version_info[0], sys.version_info[1])
+    dir_suffix = '-{0!s}.{1!s}'.format(sys.version_info[0], sys.version_info[1])
 
     build = join(dirname(dirname(abspath(__file__))), 'build')
 
@@ -39,23 +39,23 @@ def add_to_path():
 
 def print_library_info(cnxn):
     import pyodbc
-    print('python:  %s' % sys.version)
-    print('pyodbc:  %s %s' % (pyodbc.version, os.path.abspath(pyodbc.__file__)))
-    print('odbc:    %s' % cnxn.getinfo(pyodbc.SQL_ODBC_VER))
-    print('driver:  %s %s' % (cnxn.getinfo(pyodbc.SQL_DRIVER_NAME), cnxn.getinfo(pyodbc.SQL_DRIVER_VER)))
-    print('         supports ODBC version %s' % cnxn.getinfo(pyodbc.SQL_DRIVER_ODBC_VER))
-    print('os:      %s' % platform.system())
-    print('unicode: Py_Unicode=%s SQLWCHAR=%s' % (pyodbc.UNICODE_SIZE, pyodbc.SQLWCHAR_SIZE))
+    print('python:  {0!s}'.format(sys.version))
+    print('pyodbc:  {0!s} {1!s}'.format(pyodbc.version, os.path.abspath(pyodbc.__file__)))
+    print('odbc:    {0!s}'.format(cnxn.getinfo(pyodbc.SQL_ODBC_VER)))
+    print('driver:  {0!s} {1!s}'.format(cnxn.getinfo(pyodbc.SQL_DRIVER_NAME), cnxn.getinfo(pyodbc.SQL_DRIVER_VER)))
+    print('         supports ODBC version {0!s}'.format(cnxn.getinfo(pyodbc.SQL_DRIVER_ODBC_VER)))
+    print('os:      {0!s}'.format(platform.system()))
+    print('unicode: Py_Unicode={0!s} SQLWCHAR={1!s}'.format(pyodbc.UNICODE_SIZE, pyodbc.SQLWCHAR_SIZE))
 
     cursor = cnxn.cursor()
     for typename in ['VARCHAR', 'WVARCHAR', 'BINARY']:
         t = getattr(pyodbc, 'SQL_' + typename)
         cursor.getTypeInfo(t)
         row = cursor.fetchone()
-        print('Max %s = %s' % (typename, row and row[2] or '(not supported)'))
+        print('Max {0!s} = {1!s}'.format(typename, row and row[2] or '(not supported)'))
 
     if platform.system() == 'Windows':
-        print('         %s' % ' '.join([s for s in platform.win32_ver() if s]))
+        print('         {0!s}'.format(' '.join([s for s in platform.win32_ver() if s])))
 
 
 def load_tests(testclass, name, *args):
@@ -70,7 +70,7 @@ def load_tests(testclass, name, *args):
     """
     if name:
         if not name.startswith('test_'):
-            name = 'test_%s' % name
+            name = 'test_{0!s}'.format(name)
         names = [ name ]
 
     else:
@@ -107,7 +107,7 @@ def load_setup_connection_string(section):
         p = SafeConfigParser()
         p.read(fqn)
     except:
-        raise SystemExit('Unable to parse %s: %s' % (path, sys.exc_info()[1]))
+        raise SystemExit('Unable to parse {0!s}: {1!s}'.format(path, sys.exc_info()[1]))
 
     if p.has_option(section, KEY):
         return p.get(section, KEY)

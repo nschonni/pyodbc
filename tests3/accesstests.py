@@ -79,7 +79,7 @@ class AccessTestCase(unittest.TestCase):
 
         for i in range(3):
             try:
-                self.cursor.execute("drop table t%d" % i)
+                self.cursor.execute("drop table t{0:d}".format(i))
                 self.cnxn.commit()
             except:
                 pass
@@ -135,12 +135,12 @@ class AccessTestCase(unittest.TestCase):
         """
         The implementation for string, Unicode, and binary tests.
         """
-        assert colsize is None or (value is None or colsize >= len(value)), 'colsize=%s value=%s' % (colsize, (value is None) and 'none' or len(value))
+        assert colsize is None or (value is None or colsize >= len(value)), 'colsize={0!s} value={1!s}'.format(colsize, (value is None) and 'none' or len(value))
 
         if colsize:
-            sql = "create table t1(n1 int not null, s1 %s(%s), s2 %s(%s))" % (sqltype, colsize, sqltype, colsize)
+            sql = "create table t1(n1 int not null, s1 {0!s}({1!s}), s2 {2!s}({3!s}))".format(sqltype, colsize, sqltype, colsize)
         else:
-            sql = "create table t1(n1 int not null, s1 %s, s2 %s)" % (sqltype, sqltype)
+            sql = "create table t1(n1 int not null, s1 {0!s}, s2 {1!s})".format(sqltype, sqltype)
 
         self.cursor.execute(sql)
         self.cursor.execute("insert into t1 values(1, ?, ?)", (value, value))
@@ -172,10 +172,10 @@ class AccessTestCase(unittest.TestCase):
     def _maketest(value):
         def t(self):
             self._test_strtype('varchar', value, len(value))
-        t.__doc__ = 'unicode %s' % len(value)
+        t.__doc__ = 'unicode {0!s}'.format(len(value))
         return t
     for value in UNICODE_FENCEPOSTS:
-        locals()['test_unicode_%s' % len(value)] = _maketest(value)
+        locals()['test_unicode_{0!s}'.format(len(value))] = _maketest(value)
 
     #
     # ansi -> varchar
@@ -187,10 +187,10 @@ class AccessTestCase(unittest.TestCase):
     def _maketest(value):
         def t(self):
             self._test_strtype('varchar', value, len(value))
-        t.__doc__ = 'ansi %s' % len(value)
+        t.__doc__ = 'ansi {0!s}'.format(len(value))
         return t
     for value in ANSI_FENCEPOSTS:
-        locals()['test_ansivarchar_%s' % len(value)] = _maketest(value)
+        locals()['test_ansivarchar_{0!s}'.format(len(value))] = _maketest(value)
 
     #
     # binary
@@ -200,10 +200,10 @@ class AccessTestCase(unittest.TestCase):
     def _maketest(value):
         def t(self):
             self._test_strtype('varbinary', buffer(value), len(value))
-        t.__doc__ = 'binary %s' % len(value)
+        t.__doc__ = 'binary {0!s}'.format(len(value))
         return t
     for value in ANSI_FENCEPOSTS:
-        locals()['test_binary_%s' % len(value)] = _maketest(value)
+        locals()['test_binary_{0!s}'.format(len(value))] = _maketest(value)
 
 
     #
@@ -217,10 +217,10 @@ class AccessTestCase(unittest.TestCase):
     def _maketest(value):
         def t(self):
             self._test_strtype('image', buffer(value))
-        t.__doc__ = 'image %s' % len(value)
+        t.__doc__ = 'image {0!s}'.format(len(value))
         return t
     for value in IMAGE_FENCEPOSTS:
-        locals()['test_image_%s' % len(value)] = _maketest(value)
+        locals()['test_image_{0!s}'.format(len(value))] = _maketest(value)
 
     #
     # memo
@@ -233,19 +233,19 @@ class AccessTestCase(unittest.TestCase):
     def _maketest(value):
         def t(self):
             self._test_strtype('memo', unicode(value))
-        t.__doc__ = 'Unicode to memo %s' % len(value)
+        t.__doc__ = 'Unicode to memo {0!s}'.format(len(value))
         return t
     for value in IMAGE_FENCEPOSTS:
-        locals()['test_memo_%s' % len(value)] = _maketest(value)
+        locals()['test_memo_{0!s}'.format(len(value))] = _maketest(value)
 
     # ansi -> memo
     def _maketest(value):
         def t(self):
             self._test_strtype('memo', value)
-        t.__doc__ = 'ANSI to memo %s' % len(value)
+        t.__doc__ = 'ANSI to memo {0!s}'.format(len(value))
         return t
     for value in IMAGE_FENCEPOSTS:
-        locals()['test_ansimemo_%s' % len(value)] = _maketest(value)
+        locals()['test_ansimemo_{0!s}'.format(len(value))] = _maketest(value)
 
     def test_subquery_params(self):
         """Ensure parameter markers work in a subquery"""
@@ -628,7 +628,7 @@ def main():
         driver = 'Microsoft Access Driver (*.mdb)'
 
     global CNXNSTRING
-    CNXNSTRING = 'DRIVER={%s};DBQ=%s;ExtendedAnsiSQL=1' % (driver, abspath(args[0]))
+    CNXNSTRING = 'DRIVER={{{0!s}}};DBQ={1!s};ExtendedAnsiSQL=1'.format(driver, abspath(args[0]))
 
     cnxn = pyodbc.connect(CNXNSTRING)
     print_library_info(cnxn)

@@ -56,7 +56,7 @@ class TagsCommand(Command):
         # Windows versions of etag do not seem to expand wildcards (which Unix shells normally do for Unix utilities),
         # so find all of the files ourselves.
         files = [ join('src', f) for f in os.listdir('src') if f.endswith(('.h', '.cpp')) ]
-        cmd = 'etags %s' % ' '.join(files)
+        cmd = 'etags {0!s}'.format(' '.join(files))
         return os.system(cmd)
 
 
@@ -125,8 +125,8 @@ def get_compiler_settings(version_str):
     # command.
     for option in ['assert', 'trace', 'leak-check']:
         try:
-            sys.argv.remove('--%s' % option)
-            settings['define_macros'].append(('PYODBC_%s' % option.replace('-', '_').upper(), 1))
+            sys.argv.remove('--{0!s}'.format(option))
+            settings['define_macros'].append(('PYODBC_{0!s}'.format(option.replace('-', '_').upper()), 1))
         except ValueError:
             pass
 
@@ -253,7 +253,7 @@ def _get_version_pkginfo():
 def _get_version_git():
     n, result = getoutput('git describe --tags --match [0-9].[0-9].[0-9]')
     if n:
-        _print('WARNING: git describe failed with: %s %s' % (n, result))
+        _print('WARNING: git describe failed with: {0!s} {1!s}'.format(n, result))
         return None, None
 
     match = re.match(r'(\d+).(\d+).(\d+) (?: -(\d+)-g[0-9a-z]+)?', result, re.VERBOSE)
@@ -262,11 +262,11 @@ def _get_version_git():
 
     numbers = [int(n or OFFICIAL_BUILD) for n in match.groups()]
     if numbers[-1] == OFFICIAL_BUILD:
-        name = '%s.%s.%s' % tuple(numbers[:3])
+        name = '{0!s}.{1!s}.{2!s}'.format(*tuple(numbers[:3]))
     if numbers[-1] != OFFICIAL_BUILD:
         # This is a beta of the next micro release, so increment the micro number to reflect this.
         numbers[-2] += 1
-        name = '%s.%s.%sb%d' % tuple(numbers)
+        name = '{0!s}.{1!s}.{2!s}b{3:d}'.format(*tuple(numbers))
 
     n, result = getoutput('git rev-parse --abbrev-ref HEAD')
 

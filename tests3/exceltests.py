@@ -22,7 +22,7 @@ class ExcelTestCase(unittest.TestCase):
 
         for i in range(3):
             try:
-                self.cursor.execute("drop table t%d" % i)
+                self.cursor.execute("drop table t{0:d}".format(i))
                 self.cnxn.commit()
             except:
                 pass
@@ -80,7 +80,7 @@ class ExcelTestCase(unittest.TestCase):
     def test_tables(self):
         # This is useful for figuring out what is available
         tables = [ row.table_name for row in self.cursor.tables() ]
-        assert 'Sheet2$' in tables, 'tables: %s' % ' '.join(tables)
+        assert 'Sheet2$' in tables, 'tables: {0!s}'.format(' '.join(tables))
 
 
     # def test_append(self):
@@ -120,7 +120,7 @@ def main():
     path = dirname(abspath(__file__))
     filename = join(path, 'test.xls')
     assert os.path.exists(filename)
-    CNXNSTRING = 'Driver={Microsoft Excel Driver (*.xls)};DBQ=%s;READONLY=FALSE' % filename
+    CNXNSTRING = 'Driver={{Microsoft Excel Driver (*.xls)}};DBQ={0!s};READONLY=FALSE'.format(filename)
 
     cnxn = pyodbc.connect(CNXNSTRING, autocommit=True)
     print_library_info(cnxn)

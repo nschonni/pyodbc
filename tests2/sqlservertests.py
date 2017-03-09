@@ -86,14 +86,14 @@ class SqlServerTestCase(unittest.TestCase):
 
         for i in range(3):
             try:
-                self.cursor.execute("drop table t%d" % i)
+                self.cursor.execute("drop table t{0:d}".format(i))
                 self.cnxn.commit()
             except:
                 pass
 
         for i in range(3):
             try:
-                self.cursor.execute("drop procedure proc%d" % i)
+                self.cursor.execute("drop procedure proc{0:d}".format(i))
                 self.cnxn.commit()
             except:
                 pass
@@ -208,9 +208,9 @@ class SqlServerTestCase(unittest.TestCase):
         assert colsize in (None, 'max') or (value is None or colsize >= len(value))
 
         if colsize:
-            sql = "create table t1(s %s(%s))" % (sqltype, colsize)
+            sql = "create table t1(s {0!s}({1!s}))".format(sqltype, colsize)
         else:
-            sql = "create table t1(s %s)" % sqltype
+            sql = "create table t1(s {0!s})".format(sqltype)
 
         if resulttype is None:
             resulttype = type(value)
@@ -237,9 +237,9 @@ class SqlServerTestCase(unittest.TestCase):
         assert colsize is None or (value is None or colsize >= len(value))
 
         if colsize:
-            sql = "create table t1(s %s(%s))" % (sqltype, colsize)
+            sql = "create table t1(s {0!s}({1!s}))".format(sqltype, colsize)
         else:
-            sql = "create table t1(s %s)" % sqltype
+            sql = "create table t1(s {0!s})".format(sqltype)
 
         if resulttype is None:
             resulttype = type(value)
@@ -270,7 +270,7 @@ class SqlServerTestCase(unittest.TestCase):
             self._test_strtype('varchar', value, colsize=len(value))
         return t
     for value in UNICODE_SMALL_FENCEPOSTS:
-        locals()['test_varchar_%s' % len(value)] = _maketest(value)
+        locals()['test_varchar_{0!s}'.format(len(value))] = _maketest(value)
 
     # Also test varchar(max)
     def _maketest(value):
@@ -278,7 +278,7 @@ class SqlServerTestCase(unittest.TestCase):
             self._test_strtype('varchar', value, colsize='max')
         return t
     for value in UNICODE_MAX_FENCEPOSTS:
-        locals()['test_varcharmax_%s' % len(value)] = _maketest(value)
+        locals()['test_varcharmax_{0!s}'.format(len(value))] = _maketest(value)
 
     def test_varchar_many(self):
         self.cursor.execute("create table t1(c1 varchar(300), c2 varchar(300), c3 varchar(300))")
@@ -310,7 +310,7 @@ class SqlServerTestCase(unittest.TestCase):
             self._test_strtype('nvarchar', value, colsize=len(value))
         return t
     for value in UNICODE_SMALL_FENCEPOSTS:
-        locals()['test_nvarchar_%s' % len(value)] = _maketest(value)
+        locals()['test_nvarchar_{0!s}'.format(len(value))] = _maketest(value)
 
     # Also test nvarchar(max)
     def _maketest(value):
@@ -318,7 +318,7 @@ class SqlServerTestCase(unittest.TestCase):
             self._test_strtype('nvarchar', value, colsize='max')
         return t
     for value in UNICODE_MAX_FENCEPOSTS:
-        locals()['test_nvarcharmax_%s' % len(value)] = _maketest(value)
+        locals()['test_nvarcharmax_{0!s}'.format(len(value))] = _maketest(value)
 
     def test_unicode_upperlatin(self):
         self._test_strtype('nvarchar', u'\u00e5', colsize=1)
@@ -353,7 +353,7 @@ class SqlServerTestCase(unittest.TestCase):
             self._test_strtype('varbinary', buffer(value), resulttype=pyodbc.BINARY, colsize=len(value))
         return t
     for value in ANSI_SMALL_FENCEPOSTS:
-        locals()['test_binary_buffer_%s' % len(value)] = _maketest(value)
+        locals()['test_binary_buffer_{0!s}'.format(len(value))] = _maketest(value)
 
     # bytearray
 
@@ -363,7 +363,7 @@ class SqlServerTestCase(unittest.TestCase):
                 self._test_strtype('varbinary', bytearray(value), colsize=len(value))
             return t
         for value in ANSI_SMALL_FENCEPOSTS:
-            locals()['test_binary_bytearray_%s' % len(value)] = _maketest(value)
+            locals()['test_binary_bytearray_{0!s}'.format(len(value))] = _maketest(value)
 
     # varbinary(max)
     def _maketest(value):
@@ -371,7 +371,7 @@ class SqlServerTestCase(unittest.TestCase):
             self._test_strtype('varbinary', buffer(value), resulttype=pyodbc.BINARY, colsize='max')
         return t
     for value in ANSI_MAX_FENCEPOSTS:
-        locals()['test_binarymax_buffer_%s' % len(value)] = _maketest(value)
+        locals()['test_binarymax_buffer_{0!s}'.format(len(value))] = _maketest(value)
 
     # bytearray
 
@@ -381,7 +381,7 @@ class SqlServerTestCase(unittest.TestCase):
                 self._test_strtype('varbinary', bytearray(value), colsize='max')
             return t
         for value in ANSI_MAX_FENCEPOSTS:
-            locals()['test_binarymax_bytearray_%s' % len(value)] = _maketest(value)
+            locals()['test_binarymax_bytearray_{0!s}'.format(len(value))] = _maketest(value)
 
     #
     # image
@@ -396,7 +396,7 @@ class SqlServerTestCase(unittest.TestCase):
             self._test_strliketype('image', buffer(value), pyodbc.BINARY)
         return t
     for value in ANSI_LARGE_FENCEPOSTS:
-        locals()['test_image_buffer_%s' % len(value)] = _maketest(value)
+        locals()['test_image_buffer_{0!s}'.format(len(value))] = _maketest(value)
 
     if sys.hexversion >= 0x02060000:
         # Python 2.6+ supports bytearray, which pyodbc considers varbinary.
@@ -407,7 +407,7 @@ class SqlServerTestCase(unittest.TestCase):
                 self._test_strtype('image', bytearray(value))
             return t
         for value in ANSI_LARGE_FENCEPOSTS:
-            locals()['test_image_bytearray_%s' % len(value)] = _maketest(value)
+            locals()['test_image_bytearray_{0!s}'.format(len(value))] = _maketest(value)
 
     def test_image_upperlatin(self):
         self._test_strliketype('image', buffer('á'), pyodbc.BINARY)
@@ -428,7 +428,7 @@ class SqlServerTestCase(unittest.TestCase):
             self._test_strliketype('text', value)
         return t
     for value in UNICODE_SMALL_FENCEPOSTS:
-        locals()['test_text_buffer_%s' % len(value)] = _maketest(value)
+        locals()['test_text_buffer_{0!s}'.format(len(value))] = _maketest(value)
 
     def test_text_upperlatin(self):
         self._test_strliketype('text', u'á')
@@ -449,7 +449,7 @@ class SqlServerTestCase(unittest.TestCase):
             self._test_strliketype('xml', value)
         return t
     for value in UNICODE_SMALL_FENCEPOSTS:
-        locals()['test_xml_buffer_%s' % len(value)] = _maketest(value)
+        locals()['test_xml_buffer_{0!s}'.format(len(value))] = _maketest(value)
 
     def test_xml_str(self):
         # SQL Server treats XML like *binary* data.
@@ -498,7 +498,7 @@ class SqlServerTestCase(unittest.TestCase):
     def _decimal(self, precision, scale, negative):
         # From test provided by planders (thanks!) in Issue 91
 
-        self.cursor.execute("create table t1(d decimal(%s, %s))" % (precision, scale))
+        self.cursor.execute("create table t1(d decimal({0!s}, {1!s}))".format(precision, scale))
 
         # Construct a decimal that uses the maximum precision and scale.
         decStr = '9' * (precision - scale)
@@ -529,7 +529,7 @@ class SqlServerTestCase(unittest.TestCase):
                        (38, 0,  True),
                        (38, 10, True),
                        (38, 38, True) ]:
-        locals()['test_decimal_%s_%s_%s' % (p, s, n and 'n' or 'p')] = _maketest(p, s, n)
+        locals()['test_decimal_{0!s}_{1!s}_{2!s}'.format(p, s, n and 'n' or 'p')] = _maketest(p, s, n)
 
 
     def test_decimal_e(self):
@@ -1110,7 +1110,7 @@ class SqlServerTestCase(unittest.TestCase):
         # Create a table (t1) with 3 rows and a view (t2) into it.
         self.cursor.execute("create table t1(c1 int identity(1, 1), c2 varchar(50))")
         for i in range(3):
-            self.cursor.execute("insert into t1(c2) values (?)", "string%s" % i)
+            self.cursor.execute("insert into t1(c2) values (?)", "string{0!s}".format(i))
         self.cursor.execute("create view t2 as select * from t1")
 
         # Select from the view
